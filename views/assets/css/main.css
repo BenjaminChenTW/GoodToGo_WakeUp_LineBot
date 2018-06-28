@@ -5,16 +5,33 @@
 
 body {
     font-family: 'GenJyuuGothic';
-    width: 75vw;
-    margin: 0 auto 0 auto;
+}
+
+nav {
+    height: 10vh;
+    width: 100vw;
+    background-color: #9AD5E3;
+    margin: 0px;
+    padding: 0px;
+}
+
+nav h1 {
+    height: 100%;
+    width: 100%;
+    color: #333;
+    font-size: xx-large;
+    text-align: center;
+    margin: auto 0 auto 0;
+    display: block
 }
 
 .maxWidth {
     position: relative;
     width: 100%;
-    /* margin: auto 0 auto 0; */
     padding: 10px 0 10px 0;
-    padding-top: 20vh;
+    padding-top: 5vh;
+    width: 75vw;
+    margin: 0 auto 0 auto;
 }
 
 .child {
@@ -22,6 +39,7 @@ body {
 }
 
 input {
+    font-family: 'GenJyuuGothic';
     box-sizing: border-box;
     display: inline-block;
     vertical-align: middle;
@@ -33,7 +51,14 @@ input {
     padding: 2px;
     border-width: 1px;
     border-style: solid;
-    font-family: 'GenJyuuGothic';
+    border-radius: 3px;
+    border-color: #2f3542;
+    color: #333;
+}
+
+#submit {
+    background-color: #9AD5E3;
+    border: 0ch;
 }
 
 #result {
