@@ -78,7 +78,7 @@ module.exports = {
                         Promise
                             .all(funcList)
                             .then((ticketsList) => {
-                                checkOverTen(ticketsList, event, isTokenReply);
+                                checkOverTen(ticketsList, event, isTokenReply, {});
                             })
                             .catch((err) => {
                                 if (err) {
