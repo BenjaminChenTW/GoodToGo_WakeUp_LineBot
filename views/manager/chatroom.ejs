@@ -1,0 +1,321 @@
+<%- include ./header.ejs %>
+    <header>
+        <nav id="main_nav">
+                <div id='cssmenu'>
+                        <ul>
+                            <li><a href='/img'>審核<div id='checkimg' class='alert'></div></a>
+                            </li>
+                            <li><a href='/checkedList'>記錄</a>
+                            </li>
+                            <li><a href='/lotteryRecord'>中獎</a>
+                            </li>
+                            <li class='active'><a>對話<div id='chatroom' class='alert'></div></a>
+                            </li>
+                        </ul>
+                </div>
+                <b id="goodtogo">LINE BOT 後台</b>
+        </nav>
+    </header>
+    <div id='zoom_in' style='display: none'><input type='button' id='close_btn' onclick='close_zoom_in()'/></div>
+    <div id="messenger_view">
+        <div class="manager">
+            <div id='form'>
+                <input id='search_bar' type="text" placeholder=" 輸入id搜尋..." /><input id='clear' type='button'/>
+            </div>
+            <ul id="customers_list">
+            </ul>
+            <div id='rest_button' status='off' onclick='change_status(this)'><%- (online? "上線中":"已離線") %></div>
+        </div>
+        <div class="message" id='message'>
+            <p id='default_words'>請點選使用者以回覆</p>
+            <div id="message_field">
+                <nav id="customer_id"><a class="back_button" onclick="closeDialog()" style='cursor: pointer;'>ㄑ</a><p></p><a class="end_session" id="end_session" style='cursor: pointer;'></a></nav>
+                <div id="message_ul_container">
+                <ul id="message_ul">
+                </ul>
+                </div>
+            </div>
+            <div id="text_field">
+                <span class="helper"></span>
+                <input id='search_img_btn' type='button'/>
+                <input id='search_img_text' placeholder='照片編號...' type='text'/>
+                <input id='search_img_send' type='button' />
+                <input id="message_text" type='text' placeholder=" 輸入訊息..." autocomplete="off"/>
+                <input id='sendMsg' type='button' value='傳送' />
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    var online = <%- online %>
+    $('#rest_button').css('backgroundColor', (online? 'green': 'red'));
+
+    <% var tmpArr = roomList %>
+    <% var arrStr = ''; %>
+    <% for(var i = 0; i < tmpArr.length; i++) arrStr += JSON.stringify(tmpArr[i]) + (((i+1) === tmpArr.length)? '':', '); %>
+    <% var tmpStr = '[' + arrStr + ']'; %>
+    var extraRoomList = <%- tmpStr %>;
+    
+    document.title += " - 對話管理";
+
+    var isSearchImgButtonSelected = false;
+
+    var current_last_index = 0;
+
+    document.getElementsByTagName('body')[0].style.backgroundColor = 'lightblue';
+
+    var msg_order_id = 0;
+
+    $('#sendMsg').on('click', function(){
+         var msg = document.getElementById('message_text').value;
+        if (msg === '') {
+            return;
+        }
+
+        let msg_id = 'msg_'+msg_order_id;
+        msg_order_id += 1;
+        create_message('me', msg, undefined, true, 'back', msg_id);
+
+        socket.emit('sendMsg', {userId:selected_customer.getAttribute('customerId'), msg:msg});
+        document.getElementById('message_text').value = '';
+        
+    })
+
+    $('#message_text').keydown(function(event){
+        if ( event.which == 13 ){
+            $('#sendMsg').click();
+        }
+    });
+
+    $('#search_img_btn').on('click', function(){
+        if (!isSearchImgButtonSelected) {
+            this.style.marginRight = '0px';
+            document.getElementById('message_text').style.width = ('calc(80% - 50px - 120px)');
+            document.getElementById('search_img_text').style.display = 'inline-block';
+            document.getElementById('search_img_send').style.display = 'inline-block';
+        } else {
+            this.style.marginRight = '10px';
+            document.getElementById('message_text').style.width = ('calc(80% - 50px)');
+            document.getElementById('search_img_text').style.display = 'none';
+            document.getElementById('search_img_send').style.display = 'none';
+        }
+
+        isSearchImgButtonSelected = !isSearchImgButtonSelected;
+    });
+
+    $('#search_img_text').keydown(function(event){
+        if ( event.which == 13 ){
+            $('#search_img_send').click();
+        }
+    });
+
+    function create_customer_list(name, src, userId, text, time, status, pos) {
+        var new_li = document.createElement('li');
+        var new_a = document.createElement('a');
+        var new_span = document.createElement('span');
+        var new_img = document.createElement('img');
+        var new_div = document.createElement('div');
+        var new_p_time = document.createElement('p');
+        var new_p_text = document.createElement('p');
+
+        new_a.setAttribute('class', 'list_button');
+        new_a.setAttribute('onclick', 'showDialog(this,"'+userId+'",'+'"'+name+'")');
+        new_li.setAttribute('customerId', userId);
+        if (src) new_img.setAttribute('src', src);
+        new_span.setAttribute('class', 'helper');
+        new_div.setAttribute('id', 'name');
+        new_div.setAttribute('status', status);
+        new_div.innerHTML = name;    
+        new_p_text.setAttribute('id', 'text');
+        new_p_text.innerHTML = text;
+        new_p_time.setAttribute('id', 'time');
+        new_p_time.setAttribute('status', status);
+        new_p_time.innerHTML = time;
+
+        new_div.appendChild(new_p_text);
+        if (src) new_a.appendChild(new_img);
+        new_a.appendChild(new_span);
+        new_a.appendChild(new_div);
+        new_a.appendChild(new_p_time);
+        new_li.appendChild(new_a);
+
+        if (pos == 'front'){
+            document.getElementById('customers_list').insertBefore(new_li,document.getElementById('customers_list').firstChild);
+        }else{
+            document.getElementById('customers_list').appendChild(new_li);
+        }
+
+        if (selected_customer != undefined) {
+            if (selected_customer.getAttribute('customerId') == userId) {
+                selected_customer = new_a;
+                new_a.style.backgroundColor = 'rgb(240,240,240)';
+            }
+        }
+    }
+
+    $('#customers_list').on('scroll', function(){
+        if ((this.scrollHeight - Math.floor(this.scrollTop)) !== (this.clientHeight + 5)) {
+            return;
+        }
+        load_customers();
+    })
+
+    function load_customers(start_index) {
+        console.log('load')
+        var index = current_last_index;
+        if (start_index != undefined) index = start_index; 
+
+        for (var i = index ; i < index+20 ; i++) {
+            if (!extraRoomList[i]) {
+                break;
+            }
+
+            current_last_index += 1;
+
+            var name = extraRoomList[i].userName;
+            var src = extraRoomList[i].userImg;
+            var userId = extraRoomList[i].userId;
+            var text = extraRoomList[i].text;
+            var time = custom_date(new Date(Number(extraRoomList[i].time)),true);
+            var status = extraRoomList[i].hasRead ? 'read' : 'unread';
+    
+            create_customer_list(name,src,userId,text,time,status);
+
+            continue;
+        }
+    }
+
+    $('#search_img_send').on('click', function(){
+        let search_id = document.getElementById('search_img_text').value;
+
+        document.getElementById('search_img_btn').click();
+        document.getElementById('search_img_text').value = '';
+
+        $.ajax({
+            url: 'chatroom/img/' + search_id,
+            dataType: 'JSON',
+            success: function(data){
+                if (data.src === undefined) {
+                    create_message('system','查無此照片(編號: '+ search_id + ')');
+                    return;
+                } else if (!data.checked) {
+                    create_message('system','此照片尚未審核(編號: '+ search_id + ')');
+                    return;
+                }
+                var new_img = document.createElement('img');
+                new_img.setAttribute('onclick', 'zoomIn(this)');
+                new_img.setAttribute('src', data.src);
+                var upload_time = custom_date(new Date(data.uploadTime));
+                var checked_time = custom_date(new Date(Number(data.checkStatus.checkTime)));
+                var total = parseInt(data.checkStatus.amount.bag) + parseInt(data.checkStatus.amount.container) + parseInt(data.checkStatus.amount.tableware);
+                var amount = '提袋(' + data.checkStatus.amount.bag + ') 容器(' + data.checkStatus.amount.container + ') 餐具(' + data.checkStatus.amount.tableware + ') 共 ' + total + ' 次抽獎機會';
+                if (data.checkStatus.typeCode !== undefined) {
+                    var typeCode = parseInt(data.checkStatus.typeCode);
+                    amount = '0 (' + ((typeCode === 2)? data.checkStatus.reason:reasons[typeCode]) + ')';
+                }
+                var img_index = data.imgIndex;
+
+                var msg = '照片編號: ' + img_index + '\n上傳時間: ' + upload_time + '\n審核時間: ' + checked_time + '\n審核結果: ' + amount; 
+                create_message('system', msg, new_img);
+            }
+        });
+    });
+
+    $("#search_bar").on("change input paste", function(){
+        var keyword = this.value;
+
+        while(document.getElementById('customers_list').firstChild){
+            document.getElementById('customers_list').removeChild(document.getElementById('customers_list').firstChild);
+        }
+
+        for (var i = 0 ; i < extraRoomList.length ; i++) {
+            if (extraRoomList[i].userName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
+                var name = extraRoomList[i].userName;
+                var src = extraRoomList[i].userImg;
+                var userId = extraRoomList[i].userId;
+                var text = extraRoomList[i].text;
+                var time = custom_date(new Date(Number(extraRoomList[i].time)),true);
+                var status = extraRoomList[i].hasRead ? 'read' : 'unread';
+
+                create_customer_list(name,src,userId,text,time,status);
+    
+                continue;
+            }
+        }
+    });
+    var customer_msg_index;
+    document.addEventListener('scroll', function(event){
+        // console.log('scrolling');
+        if (event.target.id !== 'message_ul') { // or any other filtering condition        
+            // console.log('scrolling', event.target);
+            return;
+        }
+        if (event.target.scrollTop == 5) {
+            var scroll_pos = event.target.scrollHeight - event.target.scrollTop;
+            var data = customer_message_data;
+            for (var i = customer_msg_index+1; i < customer_msg_index + 31; i++) {
+                var img = undefined;
+                let record = data.userMessage[i];
+
+                if (!record) break;
+
+                if (record.type === 'customer') {
+                    img = selected_customer.getElementsByTagName('img')[0].cloneNode(true);
+                }
+                create_message(record.type, record.text, img, false, 'front');
+            }
+            event.target.scrollTop = event.target.scrollHeight - scroll_pos;
+            customer_msg_index += 30;
+        }
+    },true);
+
+    $('#clear').on('click', function(){
+        while(document.getElementById('customers_list').firstChild){
+            document.getElementById('customers_list').removeChild(document.getElementById('customers_list').firstChild);
+        }
+
+        document.getElementById('search_bar').value = '';
+
+        load_customers();
+    });
+
+    $('#end_session').on('click', function(){
+        $.ajax({
+            url: '/chatroom/terminateSession/' + selected_customer.getAttribute('customerId'),
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(data){
+                var type = data.type;
+                var text = data.text;
+
+                create_message(type, text);
+            }
+        })
+    })
+
+    socket.on('status', function(obj){
+        var btn = document.getElementById('rest_button');
+        if (obj.result) {
+            btn.textContent = '上線中';
+            btn.style.backgroundColor = 'green';
+        } else {
+            btn.textContent = '已離線'
+            btn.style.backgroundColor = 'red';
+        }
+    });
+
+    function change_status(btn) {
+        $.ajax({
+            url: '/chatroom/changestatus',
+            type: 'POST',
+            success: function(){}});
+    }
+
+    load_customers();
+
+    var lastRoomID = <%-'"' + lastRoom + '"' %>;
+    if (lastRoomID !== 'none')
+        $('li[customerid=' + lastRoomID + ']').find('a').click();
+        
+    </script>
+<%- include ./footer.ejs %>
