@@ -13,6 +13,8 @@ module.exports = {
         if (event.type === 'message' && event.message.type === 'text') {
             if (isMobilePhone(event.message.text)) {
                 handlers.phoneNumber(event, textReply);
+            } else if (isToken(event.message.text)) {
+                handlers.checkToken(event, imageCarouselTemplateReply, textReply);
             } else if (event.message.text === "抽獎遊戲說明") {
                 textReply(true, event.replyToken, "1. 向工作人員索取指定序號\n2. 輸入序號得到抽獎券\n3. 每天19:30將現場抽出得獎者");
             } else if (event.message.text === "登錄聯絡資訊") {
@@ -27,6 +29,9 @@ module.exports = {
                 handlers.getAllTicket(event, imageCarouselTemplateReply);
             } else if (event.message.text === "檢視更多抽獎券") {
                 handlers.othersTicket(event, imageCarouselTemplateReply);
+            } else if (isSeeAllTicket(event.message.text)) {
+                var txt = event.message.text;
+                handlers.getAllTicket(event, imageCarouselTemplateReply, parseInt(txt.slice(txt.indexOf("：") + 1)));
             } else {
                 textReply(true, event.replyToken, "不好意思，我們是有點笨的機器人，無法辨識你的文字><\n如果有任何問題，歡迎到好盒器攤位找工作人員哦！");
             }
@@ -52,6 +57,17 @@ function isMobilePhone(phone) {
     var reg = /^[09]{2}[0-9]{8}$/;
 
     return reg.test(phone);
+}
+
+function isToken(token) {
+    if (token.replace(/\s/g, "").length !== 5) return false;
+    token = token.toUpperCase();
+    var reg = /\w{5}/;
+    return reg.test(token);
+}
+
+function isSeeAllTicket(txt) {
+    return txt.indexOf("檢視更多抽獎券：") !== -1;
 }
 
 function textReply(success, replyToken, message) {
@@ -113,6 +129,11 @@ function imageCarouselTemplateReply(success, replyToken, ticketIds) {
             type: 'text',
             text: '伺服器維修中...請聯繫客服或再嘗試一次！'
         };
+    } else if (ticketIds.length == 0) {
+        echo = {
+            type: 'text',
+            text: '沒有更多了！'
+        };
     } else {
         echo = {
             "type": "template",
@@ -123,26 +144,27 @@ function imageCarouselTemplateReply(success, replyToken, ticketIds) {
             }
         };
         for (var i in ticketIds) {
-            if (ticketIds[i] !== -1)
+            if (!Number.isInteger(ticketIds[i]))
                 echo.template.columns.push({
-                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/item3.jpg",
+                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/ticket" + (parseInt(ticketIds[i].slice(1), 10) % 8 + 1) + ".png",
                     "action": {
                         "type": "postback",
                         "label": ticketIds[i],
-                        "uri": "action=buy"
+                        "data": "action=buy"
                     }
                 });
             else
                 echo.template.columns.push({
-                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/item3.jpg",
+                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/ticket_more.png",
                     "action": {
                         "type": "message",
                         "label": "檢視更多抽獎券",
-                        "text": "檢視更多抽獎券"
+                        "text": "檢視更多抽獎券" + ((ticketIds[i] == -99999) ? "" : ("：" + ticketIds[i]))
                     }
                 });
         }
     }
+    console.log(JSON.stringify(echo))
     return client.replyMessage(replyToken, echo).catch((err) => {
         debug(JSON.stringify(err.originalError.response.config.data));
         debug(JSON.stringify(err.originalError.response.data));

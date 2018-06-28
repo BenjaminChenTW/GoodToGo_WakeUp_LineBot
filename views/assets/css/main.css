@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'GenJyuuGothic';
+    src: url('/assets/font/GenJyuuGothic-Regular.woff');
+}
+
+body {
+    font-family: 'GenJyuuGothic';
+    width: 75vw;
+    margin: 0 auto 0 auto;
+}
+
+.maxWidth {
+    position: relative;
+    width: 100%;
+    /* margin: auto 0 auto 0; */
+    padding: 10px 0 10px 0;
+    padding-top: 20vh;
+}
+
+.child {
+    margin: 2vw;
+}
+
+input {
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: larger;
+    margin: 1px;
+    height: 15vw;
+    width: 100%;
+    text-align: center;
+    padding: 2px;
+    border-width: 1px;
+    border-style: solid;
+    font-family: 'GenJyuuGothic';
+}
+
+#result {
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: -webkit-xxx-large;
+    margin: 1px;
+    height: 15vw;
+    width: 100%;
+    text-align: center;
+    padding: 2px;
+    padding-top: 8vw;
+    font-weight: bold;
+}

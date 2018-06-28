@@ -2,8 +2,8 @@
     "name": "goodtogo-linebot",
     "version": "0.0.1",
     "scripts": {
-        "localTest": "echo \"Debudding Mode\" & set DEBUG=goodtogo-linebot:* & nodemon app.js --ignore *.json",
-        "test": "echo \"Debudding Mode\" && export DEBUG=goodtogo-linebot:* && nodemon app.js --ignore .json ",
+        "localTest": "echo \"Debudding Mode\" && export DEBUG=goodtogo-linebot:* && nodemon app.js --ignore .json ",
+        "test": "echo \"Debudding Mode\" & set DEBUG=goodtogo-linebot:* & nodemon app.js --ignore *.json",
         "start": "nodemon app.js --ignore *.json"
     },
     "dependencies": {
@@ -19,6 +19,7 @@
         "express-status-monitor": "^1.0.0",
         "mongoose": "^4.11.12",
         "morgan": "~1.8.1",
+        "redis": "^2.8.0",
         "request": "^2.82.0",
         "serve-favicon": "~2.4.2"
     }

@@ -16,6 +16,7 @@ var basicAuth = require('basic-auth-connect');
 var compression = require('compression');
 var mongoose = require('mongoose');
 
+var config = require("./config/config");
 var bot = require("./routes/bot").handleEvent;
 var manager = require("./routes/manager");
 
@@ -28,6 +29,7 @@ mongoose.connect(config.dbUrl, config.dbOptions, function(err) {
     debug('mongoDB connect succeed');
     // require('./tmp/tmp.2')
 });
+
 /**
  * EXPRESS init
  */
