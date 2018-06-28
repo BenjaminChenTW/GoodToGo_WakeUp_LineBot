@@ -7,6 +7,8 @@ const client = new Client(config.bot);
 var debug = require('debug')('goodtogo-linebot:bot');
 var handlers = require("../models/messageHandler");
 
+const defaultTxt = "請先輸入手機號碼再使用此功能！";
+
 module.exports = {
     // event handler
     handleEvent: function(event) {
@@ -14,7 +16,11 @@ module.exports = {
             if (isMobilePhone(event.message.text)) {
                 handlers.phoneNumber(event, textReply);
             } else if (isToken(event.message.text)) {
-                handlers.checkToken(event, imageCarouselTemplateReply, textReply);
+                handlers.checkPhone(event, function(err, hasPhone) {
+                    if (err) return textReply(false);
+                    if (!hasPhone) return textReply(true, event.replyToken, defaultTxt);
+                    handlers.checkToken(event, imageCarouselTemplateReply, textReply);
+                });
             } else if (event.message.text === "抽獎遊戲說明") {
                 textReply(true, event.replyToken, "1. 向工作人員索取指定序號\n2. 輸入序號得到抽獎券\n3. 每天19:30將現場抽出得獎者");
             } else if (event.message.text === "登錄聯絡資訊") {
@@ -24,14 +30,30 @@ module.exports = {
             } else if (event.message.text === "手機號碼無誤，不需修正") {
                 textReply(true, event.replyToken, "好的，祝你中獎！");
             } else if (event.message.text === "查詢中獎名單") {
-                handlers.findWinner(event, textReply);
+                handlers.checkPhone(event, function(err, hasPhone) {
+                    if (err) return textReply(false);
+                    if (!hasPhone) return textReply(true, event.replyToken, defaultTxt);
+                    handlers.findWinner(event, textReply);
+                });
             } else if (event.message.text === "我的抽獎券") {
-                handlers.getAllTicket(event, imageCarouselTemplateReply);
+                handlers.checkPhone(event, function(err, hasPhone) {
+                    if (err) return textReply(false);
+                    if (!hasPhone) return textReply(true, event.replyToken, defaultTxt);
+                    handlers.getAllTicket(event, imageCarouselTemplateReply);
+                });
             } else if (event.message.text === "檢視更多抽獎券") {
-                handlers.othersTicket(event, imageCarouselTemplateReply);
+                handlers.checkPhone(event, function(err, hasPhone) {
+                    if (err) return textReply(false);
+                    if (!hasPhone) return textReply(true, event.replyToken, defaultTxt);
+                    handlers.othersTicket(event, imageCarouselTemplateReply);
+                });
             } else if (isSeeAllTicket(event.message.text)) {
-                var txt = event.message.text;
-                handlers.getAllTicket(event, imageCarouselTemplateReply, parseInt(txt.slice(txt.indexOf("：") + 1)));
+                handlers.checkPhone(event, function(err, hasPhone) {
+                    if (err) return textReply(false);
+                    if (!hasPhone) return textReply(true, event.replyToken, defaultTxt);
+                    var txt = event.message.text;
+                    handlers.getAllTicket(event, imageCarouselTemplateReply, parseInt(txt.slice(txt.indexOf("：") + 1)));
+                });
             } else {
                 textReply(true, event.replyToken, "不好意思，我們是有點笨的機器人，無法辨識你的文字><\n如果有任何問題，歡迎到好盒器攤位找工作人員哦！");
             }

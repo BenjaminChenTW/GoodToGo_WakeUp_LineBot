@@ -7,8 +7,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/main.css" />
+    <link rel="shortcut icon" type="image/png" href="/wakeup/assets/favicon.ico" />
     <link rel="stylesheet" href="/wakeup/assets/css/main.css" />
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
@@ -16,7 +15,7 @@
 <body>
     <div class="maxWidth">
         <div class="child">
-            <input id='amount' type="text" placeholder=" 輸入使用者使用量" pattern="\d*" />
+            <input id='amount' type="text" placeholder="輸入使用者的使用量" pattern="\d*" />
         </div>
         <div class="child">
             <input id='submit' type='submit' value="取得代碼" onclick='submit()' />
@@ -30,7 +29,7 @@
         function submit() {
             var amount = $("#amount").val()
             if (amount) {
-                $.post("/manager/generateToken", {
+                $.post("/wakeup/manager/generateToken", {
                     amount: $("#amount").val()
                 }).done(function(data) {
                     $("#result").text(data);

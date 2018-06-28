@@ -59,7 +59,7 @@ server.on('listening', onListening);
 /**
  * BOT router
  */
-app.post('/webhook', line.middleware(config.bot), (req, res) => {
+app.post('/wakeup/webhook', line.middleware(config.bot), (req, res) => {
     Promise
         .all(req.body.events.map(bot))
         .then((result) => res.json(result));
@@ -77,7 +77,7 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use('/images', express.static(path.join(__dirname, 'views/assets/image')));
+app.use('/wakeup/images', express.static(path.join(__dirname, 'views/assets/image')));
 app.use(authMiddleWare);
 
 /**
@@ -87,13 +87,13 @@ var esm = require('express-status-monitor')({
     title: "GoodToGo LineBot Monitor"
 });
 app.use(esm.middleware);
-app.get('/status', esm.pageRoute);
+app.get('/wakeup/status', esm.pageRoute);
 
 /**
  * WEB router
  */
-app.use('/assets', express.static(path.join(__dirname, 'views/assets')));
-app.use('/manager', express.static(path.join(__dirname, 'views/manager')), manager);
+app.use('/wakeup/assets', express.static(path.join(__dirname, 'views/assets')));
+app.use('/wakeup/manager', express.static(path.join(__dirname, 'views/manager')), manager);
 
 /**
  * Error handle

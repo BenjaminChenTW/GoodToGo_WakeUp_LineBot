@@ -25,6 +25,15 @@ function getNowId(cb) {
 getNowId();
 
 module.exports = {
+    checkPhone: function(event, callback) {
+        User.findOne({
+            'lineId': event.source.userId
+        }, (err, User) => {
+            if (err) return callback(err);
+            if (!User) return callback(false, false);
+            callback(false, true);
+        });
+    },
     phoneNumber: function(event, reply) {
         User.findOneAndUpdate({
             'lineId': event.source.userId
