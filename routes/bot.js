@@ -108,7 +108,7 @@ function textReply(success, replyToken, message) {
         debug(JSON.stringify(err.originalError.response.config.data));
         debug(JSON.stringify(err.originalError.response.data));
     });
-};
+}
 
 function buttonsReply(success, replyToken, message) {
     var echo;
@@ -142,7 +142,7 @@ function buttonsReply(success, replyToken, message) {
         debug(JSON.stringify(err.originalError.response.config.data));
         debug(JSON.stringify(err.originalError.response.data));
     });
-};
+}
 
 function imageCarouselTemplateReply(success, replyToken, ticketIds) {
     var echo;
