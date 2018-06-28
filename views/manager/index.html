@@ -9,7 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico" />
     <link rel="stylesheet" href="/assets/css/main.css" />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="/wakeup/assets/css/main.css" />
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 
 <body>
@@ -36,6 +37,8 @@
                 }).fail(function() {
                     $("#result").text("網路異常");
                 });
+            } else {
+                $("#result").text("請輸入數量");
             }
         }
     </script>
