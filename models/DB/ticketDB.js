@@ -4,8 +4,14 @@ var mongoose = require('mongoose');
 var schema = mongoose.Schema({
     id: Number,
     user: String,
-    isRead: Boolean,
-    isUsed: Boolean
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    isUsed: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });

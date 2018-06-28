@@ -25,7 +25,7 @@ module.exports = {
                 handlers.findWinner(event, textReply);
             } else if (event.message.text === "我的抽獎券") {
                 handlers.getAllTicket(event, imageCarouselTemplateReply);
-            } else if (event.message.text === "繼續檢視更多") {
+            } else if (event.message.text === "檢視更多抽獎券") {
                 handlers.othersTicket(event, imageCarouselTemplateReply);
             } else {
                 textReply(true, event.replyToken, "不好意思，我們是有點笨的機器人，無法辨識你的文字><\n如果有任何問題，歡迎到好盒器攤位找工作人員哦！");
@@ -123,14 +123,24 @@ function imageCarouselTemplateReply(success, replyToken, ticketIds) {
             }
         };
         for (var i in ticketIds) {
-            echo.template.columns.push({
-                "imageUrl": "https://app.goodtogo.tw/wakeup/images/item3.jpg",
-                "action": {
-                    "type": "postback",
-                    "label": ticketIds[i],
-                    "uri": "action=buy"
-                }
-            });
+            if (ticketIds[i] !== -1)
+                echo.template.columns.push({
+                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/item3.jpg",
+                    "action": {
+                        "type": "postback",
+                        "label": ticketIds[i],
+                        "uri": "action=buy"
+                    }
+                });
+            else
+                echo.template.columns.push({
+                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/item3.jpg",
+                    "action": {
+                        "type": "message",
+                        "label": "檢視更多抽獎券",
+                        "text": "檢視更多抽獎券"
+                    }
+                });
         }
     }
     return client.replyMessage(replyToken, echo).catch((err) => {
