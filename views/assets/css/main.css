@@ -18,7 +18,7 @@ body {
 }
 
 .child {
-    margin: 2vw;
+    margin: 2vh 2vw;
 }
 
 input {
@@ -27,7 +27,7 @@ input {
     vertical-align: middle;
     font-size: larger;
     margin: 1px;
-    height: 15vw;
+    height: 15vh;
     width: 100%;
     text-align: center;
     padding: 2px;
@@ -42,10 +42,10 @@ input {
     vertical-align: middle;
     font-size: -webkit-xxx-large;
     margin: 1px;
-    height: 15vw;
+    height: 15vh;
     width: 100%;
     text-align: center;
     padding: 2px;
-    padding-top: 8vw;
+    padding-top: 8vh;
     font-weight: bold;
 }
