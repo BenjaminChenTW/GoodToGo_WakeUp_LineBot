@@ -164,7 +164,6 @@ function imageCarouselTemplateReply(success, replyToken, ticketIds) {
                 });
         }
     }
-    console.log(JSON.stringify(echo))
     return client.replyMessage(replyToken, echo).catch((err) => {
         debug(JSON.stringify(err.originalError.response.config.data));
         debug(JSON.stringify(err.originalError.response.data));

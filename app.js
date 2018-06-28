@@ -77,7 +77,7 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use('/image', express.static(path.join(__dirname, 'views/assets/image')));
+app.use('/images', express.static(path.join(__dirname, 'views/assets/image')));
 app.use(authMiddleWare);
 
 /**

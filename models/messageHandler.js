@@ -47,7 +47,6 @@ module.exports = {
                 return notTokenReply(true, event.replyToken, "您輸入的驗證碼已被使用");
             } else {
                 redis.del('token:' + token, (err, delReply) => {
-                    console.log(err, delReply);
                     if (err) return notTokenReply(false, event.replyToken);
                     if (delReply !== 1) return notTokenReply(false, event.replyToken);
 
@@ -63,7 +62,6 @@ module.exports = {
                                 var localTicket = newTicket;
                                 localTicket.save((err) => {
                                     if (err) return reject(err);
-                                    console.log(localTicket.id);
                                     resolve(localTicket);
                                 });
                             }));
