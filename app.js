@@ -16,7 +16,8 @@ var basicAuth = require('basic-auth-connect');
 var compression = require('compression');
 var mongoose = require('mongoose');
 
-
+var bot = require("./routes/bot").handleEvent;
+var manager = require("./routes/manager");
 
 /**
  * DB init
@@ -74,8 +75,8 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use('/assets', express.static(path.join(__dirname, 'views/assets')));
-app.use(authMiddleWare)
+app.use('/image', express.static(path.join(__dirname, 'views/assets/image')));
+app.use(authMiddleWare);
 
 /**
  * Status Monitir init
@@ -89,7 +90,8 @@ app.get('/status', esm.pageRoute);
 /**
  * WEB router
  */
-app.use('/img', imgCheck.router);
+app.use('/assets', express.static(path.join(__dirname, 'views/assets')));
+app.use('/manager', express.static(path.join(__dirname, 'views/manager')), manager);
 
 /**
  * Error handle

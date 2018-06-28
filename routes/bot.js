@@ -13,7 +13,7 @@ module.exports = {
         if (event.type === 'message' && event.message.type === 'text') {
             if (isMobilePhone(event.message.text)) {
                 handlers.phoneNumber(event, textReply);
-            } else if (event.message.text === "抽獎說明") {
+            } else if (event.message.text === "抽獎遊戲說明") {
                 textReply(true, event.replyToken, "1. 向工作人員索取指定序號\n2. 輸入序號得到抽獎券\n3. 每天19:30將現場抽出得獎者");
             } else if (event.message.text === "登錄聯絡資訊") {
                 handlers.toAdd(event, textReply, buttonsReply);
