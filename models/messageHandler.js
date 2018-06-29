@@ -1,5 +1,6 @@
 var User = require("./DB/userDB");
 var Ticket = require("./DB/ticketDB");
+var Prize = require("./DB/prizeDB");
 var redis = require("../models/DB/redis");
 var debug = require('debug')('goodtogo-linebot:handler');
 var debugLog = require('debug')('goodtogo-linebot:handler');
@@ -109,7 +110,34 @@ module.exports = {
         });
     },
     findWinner: function(event, reply) {
-
+        var timePoint = [new Date(1530201600000), new Date(1530288000000), new Date(1530374400000), new Date(1530460800000)];
+        var date = ["一", "二", "三"];
+        Prize.find({}, {}, {
+            sort: {
+                createAt: 1
+            }
+        }, (err, allPrize) => {
+            if (err) return reply(false, event.replyToken);
+            var replyTxt = "";
+            if (allPrize.length > 0) {
+                for (var i = 0; i < 3 && allPrize.length > 0 && Date.now() > timePoint[i]; i++) {
+                    replyTxt += "第" + date[i] + "天的中獎名單：\n";
+                    for (var j in allPrize) {
+                        if (allPrize[j].createdAt < timePoint[i + 1] && allPrize[j].createdAt > timePoint[i]) {
+                            replyTxt += "抽獎券編號" + intReLength(allPrize[j].ticketId, 4) + " 抽中【" + allPrize[j].prize + "】\n";
+                            allPrize.slice(i, 1);
+                        } else
+                            break;
+                    }
+                    replyTxt += "恭喜以上得獎者！請帶著手機來好盒器攤位領獎哦^^";
+                    if ((i + 1) < 3 && allPrize.length > 0 && Date.now() > timePoint[i + 1]) replyTxt += "\n";
+                }
+                replyTxt.replace(/[\s\S]/g, "");
+            } else {
+                replyTxt += "還沒開獎哦！今天19:30將會抽出第一批幸運兒！";
+            }
+            reply(true, event.replyToken, replyTxt);
+        });
     },
     getAllTicket: function(event, reply, skip) {
         findTicket(event, {
