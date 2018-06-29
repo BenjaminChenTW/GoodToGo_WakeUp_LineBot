@@ -31,10 +31,22 @@
         </div>
     </div>
     <div class="footer">
-        <!-- <div class="tool"></div>
-        <div class="tool"></div>
-        <div class="tool"></div>
-        <div class="tool"></div> -->
+        <div class="tool">
+            <ul>
+                <li>
+                    <a href="/wakeup/manager/index">代碼產生</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/tickets">抽獎券名單</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/apply">得獎編號輸入</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/winner">得獎名單</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -52,6 +64,17 @@
                 $("#result").text("請輸入數量");
             }
         }
+
+        $(document).ready(function() {
+            var mobileSafari = (/iPhone/i.test(navigator.platform) || /iPod/i.test(navigator.platform) ||
+                /iPad/i.test(navigator.userAgent)) && !!navigator.appVersion.match(
+                /(?:Version\/)([\w\._]+)/);
+            if (mobileSafari) {
+                $("#result").css("margin", "3vh 0");
+                $(".tool").css("padding-top", "1vh");
+                $(".footer").css("height", "10vh");
+            }
+        });
     </script>
 </body>
 

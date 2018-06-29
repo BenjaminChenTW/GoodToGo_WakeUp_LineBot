@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-tw" style="width:100vw">
+
+<head>
+    <title>好盒器 LineBot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="shortcut icon" type="image/png" href="/wakeup/assets/favicon.ico" />
+    <link rel="stylesheet" href="/wakeup/assets/css/normalize.css" />
+    <link rel="stylesheet" href="/wakeup/assets/css/main.css" />
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h1>抽獎者名單</h1>
+    </div>
+    <!-- <div class="header-line"></div> -->
+    <div class="body maxWidth wider">
+        <div class="body-padding-top" id="second"></div>
+        <p>抽獎人數：<%- userAmount %></p>
+        <p>抽獎券發放：<%- ticketList.length %></p>
+        <input id='amount' class="inline" type="text" placeholder="輸入抽獎券編號或是手機號碼" pattern="\d*" />
+        <input id='submit' class="inline" type='submit' value="搜尋" onclick='submit()' />
+        <div class="body-padding-top" id="second"></div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>抽獎券</th>
+                        <th>手機號碼</th>
+                        <th>兌換</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i in ticketList){ %>
+                        <tr>
+                            <td><%- ticketList[i].id %></td>
+                            <td><%- ticketList[i].phone %></td>
+                            <% if (ticketList[i].hasPrize){ %>
+                                <td><a class="canUse" href="/wakeup/manager/winner">兌換</a></td>
+                            <% } else { %>
+                                <td></td>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    </div>
+    <div class="footer">
+        <div class="tool">
+            <ul>
+                <li>
+                    <a href="/wakeup/manager/index">代碼產生</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/tickets">抽獎券名單</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/apply">得獎編號輸入</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/winner">得獎名單</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function submit() {
+            var query = $("#amount").val();
+            $.post("/wakeup/manager/findRecord", {
+                query: query
+            }).done(function(data) {
+                data = JSON.parse(data);
+                var resultHtml = "";
+                for (var i in data) {
+                    resultHtml += "<tr>";
+                    resultHtml += "<td>" + data[i].id + "</td>";
+                    resultHtml += "<td>" + data[i].phone + "</td>";
+                    if (data[i].hasPrize){
+                        resultHtml += "<td><a class=\"canUse\" href=\"/wakeup/manager/winner\">兌換</a></td>";
+                    } else {
+                        resultHtml += "<td></td>";
+                    }
+                    resultHtml += "</tr>";
+                }
+                $("tbody").html(resultHtml);
+            }).fail(function() {
+                alert("網路異常");
+            });
+        }
+
+        $(document).ready(function() {
+            var mobileSafari = (/iPhone/i.test(navigator.platform) || /iPod/i.test(navigator.platform) ||
+                /iPad/i.test(navigator.userAgent)) && !!navigator.appVersion.match(
+                /(?:Version\/)([\w\._]+)/);
+            if (mobileSafari) {
+                $(".table-wrapper").css("height", "36vh");
+                $(".tool").css("padding-top", "1vh");
+                $(".footer").css("height", "10vh");
+            }
+        });
+    </script>
+</body>
+
+</html>

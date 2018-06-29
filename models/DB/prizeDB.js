@@ -2,13 +2,10 @@ var mongoose = require('mongoose');
 
 // define the schema for our user model
 var schema = mongoose.Schema({
-    id: Number,
+    ticketId: Number,
     user: String,
     phone: String,
-    isRead: {
-        type: Boolean,
-        default: false
-    },
+    prize: String,
     isUsed: {
         type: Boolean,
         default: false
@@ -28,4 +25,4 @@ schema.index({
 });
 
 // create the model for users and expose it to our app
-module.exports = mongoose.model('Ticket', schema);
+module.exports = mongoose.model('Prize', schema);

@@ -34,6 +34,9 @@ div.body {
 }
 
 div.footer {
+    position: fixed;
+    bottom: 0;
+    z-index: 10;
     width: 100%;
     height: 13vh;
     background-color: #bdc3c7;
@@ -41,21 +44,14 @@ div.footer {
     padding: 0;
 }
 
-div.tool {
-    display: inline-block;
-    width: 25vw;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border: 1px;
-    border-color: #2c3e50
-}
-
 .maxWidth {
     position: relative;
-    width: 100%;
     width: 75vw;
     margin: 0 auto 0 auto;
+}
+
+.wider {
+    width: 90vw;
 }
 
 .body-padding-top {
@@ -64,12 +60,42 @@ div.tool {
     padding: 0;
 }
 
+.body-padding-top#second {
+    height: 3vh;
+}
+
 .child {
     /* margin: 2vh 2vw; */
     padding: 2vh 2vw;
 }
 
-input {
+input,
+button {
+    font-family: 'GenJyuuGothic';
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 3vh;
+    margin: 1px;
+    text-align: center;
+    padding: 2px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: #2f3542;
+    color: #333;
+    line-height: 1;
+}
+
+input::-webkit-input-placeholder,
+input:-ms-input-placeholder,
+input:-moz-placeholder {
+    text-align: center;
+}
+
+.child input,
+.child select,
+.child button {
     font-family: 'GenJyuuGothic';
     box-sizing: border-box;
     display: inline-block;
@@ -87,6 +113,87 @@ input {
     color: #333;
 }
 
+.fixHeight select,
+.fixHeight input,
+.fixHeight button {
+    height: 9vh;
+    margin-bottom: 1vh;
+    text-align: left;
+    padding-left: 2vh;
+}
+
+.fixHeight p {
+    margin: 1vh 0;
+    text-align: left;
+}
+
+.fixHeight input#submit {
+    margin-top: 2vh;
+    text-align: center;
+    padding: 0;
+}
+
+.inline {
+    display: inline;
+}
+
+input.inline {
+    font-size: 2vh;
+    height: 5vh;
+    padding: 1vh 2vw;
+}
+
+input.inline#amount {
+    width: 70vw;
+}
+
+input.inline#submit {
+    width: 15vw;
+}
+
+.tool {
+    padding-top: 2vh;
+}
+
+.tool ul {
+    display: block;
+    float: none;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+}
+
+.tool ul li {
+    display: inline;
+    float: none;
+    /* color: #237dac; */
+}
+
+.tool ul li:after {
+    content: "\2022";
+    font-size: 14px;
+}
+
+.tool ul li:last-child:after {
+    content: "";
+}
+
+.tool a {
+    margin: .5vh;
+    font-style: normal;
+    text-decoration: none;
+}
+
+.tool a:link,
+.tool a:hover,
+.tool a:active {
+    color: #2c3e50
+}
+
+.tool a:visited {
+    color: #34495e;
+}
+
 #submit {
     background-color: #9AD5E3;
     border: 0ch;
@@ -100,4 +207,42 @@ input {
     width: 100%;
     text-align: center;
     font-weight: bold;
+}
+
+.table-wrapper {
+    /* overflow-y: auto; */
+    overflow-y: scroll;
+    /* has to be scroll, not auto */
+    -webkit-overflow-scrolling: touch;
+    height: 45vh;
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+th,
+td {
+    padding: 0.5vh 0.5vw;
+}
+
+th:first-child,
+td:first-child {
+    width: 20%
+}
+
+.canUse {
+    text-decoration: underline;
+}
+
+a:link.canUse,
+a:hover.canUse,
+a:active.canUse {
+    color: black;
+}
+
+a:visited.canUse {
+    color: black;
 }

@@ -28,9 +28,10 @@ module.exports = {
     checkPhone: function(event, callback) {
         User.findOne({
             'lineId': event.source.userId
-        }, (err, User) => {
+        }, (err, theUser) => {
             if (err) return callback(err);
-            if (!User) return callback(false, false);
+            if (!theUser) return callback(false, false);
+            event._user = theUser.phone;
             callback(false, true);
         });
     },
@@ -64,7 +65,8 @@ module.exports = {
                         for (var i = 0; i < getReply; i++) {
                             var newTicket = Ticket({
                                 id: nowId,
-                                user: event.source.userId
+                                user: event.source.userId,
+                                phone: event._user
                             });
                             nowId++;
                             funcList.push(new Promise((resolve, reject) => {

@@ -68,7 +68,7 @@ app.post('/wakeup/webhook', line.middleware(config.bot), (req, res) => {
 /**
  * WEB init
  */
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views/manager'));
 app.set('view engine', 'ejs');
 app.use(compression());
 app.use(favicon(path.join(__dirname, 'views/assets', 'favicon.ico')));

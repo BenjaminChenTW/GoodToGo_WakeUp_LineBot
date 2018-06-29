@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-tw" style="width:100vw">
+
+<head>
+    <title>好盒器 LineBot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width, height=device-height" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="shortcut icon" type="image/png" href="/wakeup/assets/favicon.ico" />
+    <link rel="stylesheet" href="/wakeup/assets/css/normalize.css" />
+    <link rel="stylesheet" href="/wakeup/assets/css/main.css" />
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h1>得獎編號輸入</h1>
+    </div>
+    <!-- <div class="header-line"></div> -->
+    <div class="body maxWidth">
+        <div class="body-padding-top"></div>
+        <div class="child fixHeight">
+            <form action="/wakeup/manager/applyPrize" method="post" form="prize">
+                <p>提供者</p>
+                <select name="provider" id="provider">
+                    <option value="0">- 請選擇 -</option>
+                    <option value="A">覺醒周邊</option>
+                    <option value="B">樂團周邊</option>
+                    <option value="C">好盒器</option>
+                </select>
+                <p>獎項</p>
+                <select name="prize" id="prize">
+                    <option value="-1">-請先選擇提供者-</option>
+                </select>
+                <p>得獎者</p>
+                <input id='id' type='text' placeholder="得獎之抽獎券編號" pattern="\d*" />
+                <p></p>
+            </form>
+            <input id='submit' type='submit' value="送出" form="prize" onclick="submit()"/>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="tool">
+            <ul>
+                <li>
+                    <a href="/wakeup/manager/index">代碼產生</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/tickets">抽獎券名單</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/apply">得獎編號輸入</a>
+                </li>
+                <li>
+                    <a href="/wakeup/manager/winner">得獎名單</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var provider = {
+            A:"覺醒音樂祭周邊",
+            B:"樂團周邊",
+            C:"好盒器"
+        };
+        var prize = {
+            A:["大浴巾", "毛巾", "毛巾帽", "零錢包", "海報", "竹吸管"],
+            B:["鄭宜農 - 冬眠演唱會 海報", "Empty ORio 力歐巾", "滅火器 2016 ON FIRE DAY：繼續向前行萬人演唱會 全記錄 雙 DVD", "拍謝少年 《海口味》", "拍謝少年 《兄弟沒夢不應該》", "拍謝少年 虱目魚毛巾"],
+            C:["覺醒2019未來票"]
+        };
+
+        function submit() {
+            var providerVal = $("#provider").val();
+            var prizeVal = $("#prize").val();
+            var id = $("#id").val();
+            if (providerVal !== "0" && prizeVal !== "-1" && id >= 0) {
+                $.post("/wakeup/manager/applyPrize", {
+                    provider: provider[providerVal],
+                    prize: prize[providerVal][prizeVal],
+                    id: id
+                }).done(function(data) {
+                    if (data) alert(data);
+                    $("#provider").val(0).change();
+                    $("#id").val("");
+                }).fail(function() {
+                    alert("網路異常");
+                });
+            } else {
+                alert("請將資料填妥");
+            }
+        }
+
+        $(document).ready(function() {
+            var mobileSafari = (/iPhone/i.test(navigator.platform) || /iPod/i.test(navigator.platform) ||
+                /iPad/i.test(navigator.userAgent)) && !!navigator.appVersion.match(
+                /(?:Version\/)([\w\._]+)/);
+            if (mobileSafari) {
+                $(".body-padding-top").css("height", "2vh");
+                $(".tool").css("padding-top", "1vh");
+                $(".footer").css("height", "10vh");
+            }
+
+            $("#provider").on('change', function() {
+                var val = this.value;
+                $('#prize').html("");
+                if (val == 0) {
+                    $('#prize').append($('<option>', { 
+                        value: "-1",
+                        text : "-請先選擇提供者-" 
+                    }));
+                } else {
+                    $.each(prize[val], function (i, item) {
+                        $('#prize').append($('<option>', { 
+                            value: i,
+                            text : "  " + item 
+                        }));
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
