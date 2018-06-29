@@ -132,7 +132,6 @@ router.post('/findRecord', function(req, res, next) {
                     onclick: "onclick=\"get('#" + intReLength(reply[i].ticketId, 4) + "','" + reply[i].phone + "')\"",
                     isUsed: reply[i].isUsed
                 });
-            console.log(result[0].onclick);
             return res.end(JSON.stringify(result));
         });
     } else {
@@ -157,15 +156,14 @@ router.post('/findRecord', function(req, res, next) {
 router.post('/getPrize', function(req, res, next) {
     var id = req.body.id;
     var phone = req.body.phone;
-    Prize.update({
+    Prize.findOneAndUpdate({
         ticketId: id,
         phone: phone,
         isUsed: false
     }, {
         isUsed: true
     }, (err, reply) => {
-        console.log(reply)
-        if (err) return res.end('false');
+        if (err || !reply) return res.end('false');
         res.end('true');
     });
 });

@@ -37,16 +37,37 @@ module.exports = {
         });
     },
     phoneNumber: function(event, reply) {
-        User.findOneAndUpdate({
+        User.findOne({
             'lineId': event.source.userId
-        }, {
-            'phone': event.message.text
-        }, {
-            upsert: true,
-            new: true
-        }, (err, afterUpdate) => {
+        }, (err, theUser) => {
             if (err) return reply(false, event.replyToken);
-            reply(true, event.replyToken, "登錄完成！如果你中獎，我們會透過手機與你聯繫，祝你中獎！");
+            if (theUser) {
+                Ticket.updateMany({
+                    'user': event.source.userId
+                }, {
+                    'phone': event.message.text
+                }, (err, afterUpdate) => {
+                    if (err) return reply(false, event.replyToken);
+                    Prize.updateMany({
+                        'user': event.source.userId
+                    }, {
+                        'phone': event.message.text
+                    }, (err, afterUpdate) => {
+                        if (err) return reply(false, event.replyToken);
+                        reply(true, event.replyToken, "幫您更新好囉！如果你中獎，我們會透過手機與你聯繫，祝你中獎！");
+                    });
+                });
+            } else {
+                var newUser = User({
+                    'lineId': event.source.userId,
+                    'phone': event.message.text
+                });
+                newUser.save((err) => {
+                    if (err) return reply(false, event.replyToken);
+                    reply(true, event.replyToken, "登錄完成！如果你中獎，我們會透過手機與你聯繫，祝你中獎！");
+                });
+
+            }
         });
     },
     checkToken: function(event, isTokenReply, notTokenReply) {
@@ -121,11 +142,11 @@ module.exports = {
             var replyTxt = "";
             if (allPrize.length > 0) {
                 for (var i = 0; i < 3 && allPrize.length > 0 && Date.now() > timePoint[i]; i++) {
-                    replyTxt += "第" + date[i] + "天的中獎名單：\n";
+                    replyTxt += "第" + date[i] + "天的中獎名單：\n\n";
                     for (var j in allPrize) {
                         if (allPrize[j].createdAt < timePoint[i + 1] && allPrize[j].createdAt > timePoint[i]) {
-                            replyTxt += "👉 #" + intReLength(allPrize[j].ticketId, 4) + " 抽中【" +
-                                allPrize[j].prize.replace("音樂祭周邊_", "").replace("樂團周邊_", "").replace("好盒器_", "") + "】\n";
+                            replyTxt += "🎁 #" + intReLength(allPrize[j].ticketId, 4) + " \n👉【" +
+                                allPrize[j].prize.replace("音樂祭周邊_", "").replace("樂團周邊_", "").replace("好盒器_", "") + "】\n\n";
                             allPrize.slice(i, 1);
                         } else
                             break;
