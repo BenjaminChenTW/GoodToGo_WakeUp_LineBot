@@ -46,7 +46,7 @@ module.exports = {
             new: true
         }, (err, afterUpdate) => {
             if (err) return reply(false, event.replyToken);
-            reply(true, event.replyToken, "登錄完成！如果你有中獎，我們會再與你聯繫，祝你中獎！");
+            reply(true, event.replyToken, "登錄完成！如果你中獎，我們會透過手機與你聯繫，祝你中獎！");
         });
     },
     checkToken: function(event, isTokenReply, notTokenReply) {
@@ -104,7 +104,7 @@ module.exports = {
         }, (err, theUser) => {
             if (err) return newAddReply(false, event.replyToken);
             if (!theUser)
-                newAddReply(true, event.replyToken, "你尚未登錄聯絡資訊，請輸入可連絡到你的手機號碼");
+                newAddReply(true, event.replyToken, "你尚未登錄聯絡資訊，請輸入手機號碼，如果你中獎我們就可以透過手機通知你！");
             else
                 hasAddReply(true, event.replyToken, "你已登錄聯絡資訊: " + theUser.phone + "，有需要修正嗎？");
         });
@@ -124,7 +124,8 @@ module.exports = {
                     replyTxt += "第" + date[i] + "天的中獎名單：\n";
                     for (var j in allPrize) {
                         if (allPrize[j].createdAt < timePoint[i + 1] && allPrize[j].createdAt > timePoint[i]) {
-                            replyTxt += "抽獎券編號" + intReLength(allPrize[j].ticketId, 4) + " 抽中【" + allPrize[j].prize + "】\n";
+                            replyTxt += "👉 #" + intReLength(allPrize[j].ticketId, 4) + " 抽中【" +
+                                allPrize[j].prize.replace("音樂祭周邊_", "").replace("樂團周邊_", "").replace("好盒器_", "") + "】\n";
                             allPrize.slice(i, 1);
                         } else
                             break;

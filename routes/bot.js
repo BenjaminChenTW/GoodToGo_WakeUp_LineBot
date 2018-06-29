@@ -22,11 +22,11 @@ module.exports = {
                     handlers.checkToken(event, imageCarouselTemplateReply, textReply);
                 });
             } else if (event.message.text === "抽獎遊戲說明") {
-                textReply(true, event.replyToken, "1. 向工作人員索取指定序號\n2. 輸入序號得到抽獎券\n3. 每天19:30將現場抽出得獎者");
+                textReply(true, event.replyToken, "1.在好盒器攤位索取指定序\n2.輸入序號得到抽獎券\n3.每天19:30現場抽出得獎者");
             } else if (event.message.text === "登錄聯絡資訊") {
                 handlers.toAdd(event, textReply, buttonsReply);
             } else if (event.message.text === "我要修正聯絡資訊") {
-                textReply(true, event.replyToken, "請輸入可連絡到你的手機號碼");
+                textReply(true, event.replyToken, "請輸入手機號碼");
             } else if (event.message.text === "手機號碼無誤，不需修正") {
                 textReply(true, event.replyToken, "好的，祝你中獎！");
             } else if (event.message.text === "查詢中獎名單") {
@@ -55,7 +55,7 @@ module.exports = {
                     handlers.getAllTicket(event, imageCarouselTemplateReply, parseInt(txt.slice(txt.indexOf("：") + 1)));
                 });
             } else {
-                textReply(true, event.replyToken, "不好意思，我們是有點笨的機器人，無法辨識你的文字><\n如果有任何問題，歡迎到好盒器攤位找工作人員哦！");
+                textReply(true, event.replyToken, "不好意思，我們是有點笨的機器人，無法辨識你的文字🤖\n如果有任何問題，歡迎到好盒器攤位找工作人員哦！😊");
             }
         } else {
             return Promise.resolve(null);
