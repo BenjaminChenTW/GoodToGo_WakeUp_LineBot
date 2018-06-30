@@ -131,7 +131,6 @@ module.exports = {
         });
     },
     findWinner: function(event, reply) {
-        console.log("1")
         var timePoint = [new Date(1530201600000), new Date(1530288000000), new Date(1530374400000), new Date(1530460800000)];
         var date = ["一", "二", "三"];
         Prize.find({}, {}, {
@@ -140,6 +139,7 @@ module.exports = {
             }
         }, (err, allPrize) => {
             if (err) return reply(false, event.replyToken);
+            var replyTxt = "";
             if (allPrize.length > 0) {
                 for (var i = 0; i < 3 && allPrize.length > 0 && Date.now() > timePoint[i]; i++) {
                     replyTxt += "第" + date[i] + "天的中獎名單：\n\n";
