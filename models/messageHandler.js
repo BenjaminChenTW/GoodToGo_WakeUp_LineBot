@@ -161,8 +161,7 @@ module.exports = {
     },
     getAllTicket: function(event, reply, skip) {
         findTicket(event, {
-            "user": event.source.userId,
-            "isUsed": false
+            "user": event.source.userId
         }, reply, skip);
     },
     othersTicket: function(event, reply) {
