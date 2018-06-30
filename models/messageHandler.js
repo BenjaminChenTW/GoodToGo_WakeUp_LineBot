@@ -156,7 +156,7 @@ module.exports = {
                 }
                 replyTxt.replace(/[\s\S]/g, "");
             } else {
-                replyTxt += "還沒開獎哦！今天19:30將會抽出第一批幸運兒！";
+                replyTxt += "還沒開獎哦！今天22:00將會抽出第一批幸運兒！";
             }
             reply(true, event.replyToken, replyTxt);
         });
