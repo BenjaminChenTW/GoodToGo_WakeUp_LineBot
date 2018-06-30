@@ -131,7 +131,7 @@ module.exports = {
         });
     },
     findWinner: function(event, reply) {
-        var timePoint = [new Date(1530201600000), new Date(1530288000000), new Date(1530374400000), new Date(1530460800000)];
+        var timePoint = [new Date(1530201600000 + 79200000), new Date(1530288000000 + 79200000), new Date(1530374400000 + 79200000), new Date(1530460800000 + 79200000)];
         var date = ["一", "二", "三"];
         Prize.find({}, {}, {
             sort: {
