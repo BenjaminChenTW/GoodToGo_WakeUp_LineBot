@@ -131,6 +131,7 @@ module.exports = {
         });
     },
     findWinner: function(event, reply) {
+        console.log("1")
         var timePoint = [new Date(1530201600000), new Date(1530288000000), new Date(1530374400000), new Date(1530460800000)];
         var date = ["一", "二", "三"];
         Prize.find({}, {}, {
@@ -139,24 +140,20 @@ module.exports = {
             }
         }, (err, allPrize) => {
             if (err) return reply(false, event.replyToken);
-            var replyTxt = "";
             if (allPrize.length > 0) {
                 for (var i = 0; i < 3 && allPrize.length > 0 && Date.now() > timePoint[i]; i++) {
                     replyTxt += "第" + date[i] + "天的中獎名單：\n\n";
-                    for (var j in allPrize) {
-                        if (allPrize[j].createdAt < timePoint[i + 1] && allPrize[j].createdAt > timePoint[i]) {
-                            replyTxt += "🎁 #" + intReLength(allPrize[j].ticketId, 4) + " \n👉【" +
-                                allPrize[j].prize.replace("音樂祭周邊_", "").replace("樂團周邊_", "").replace("好盒器_", "") + "】\n\n";
-                            allPrize.slice(i, 1);
-                        } else
-                            break;
+                    var j = 0;
+                    while (allPrize[j].createdAt < timePoint[i + 1] && allPrize[j].createdAt > timePoint[i]) {
+                        replyTxt += "🎁 #" + intReLength(allPrize[j].ticketId, 4) + " \n👉【" +
+                            allPrize[j].prize.replace("音樂祭周邊_", "").replace("樂團周邊_", "").replace("好盒器_", "") + "】\n\n";
+                        allPrize = allPrize.slice(j, j + 1);
                     }
-                    replyTxt += "恭喜以上得獎者！請帶著手機來好盒器攤位領獎哦^^";
                     if ((i + 1) < 3 && allPrize.length > 0 && Date.now() > timePoint[i + 1]) replyTxt += "\n";
                 }
-                replyTxt.replace(/[\s\S]/g, "");
+                replyTxt += "恭喜以上得獎者！請帶著手機來好盒器攤位領獎哦^^";
             } else {
-                replyTxt += "還沒開獎哦！今天19:30將會抽出第一批幸運兒！";
+                replyTxt += "還沒開獎哦！今天22:00將會抽出第一批幸運兒！";
             }
             reply(true, event.replyToken, replyTxt);
         });

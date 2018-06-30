@@ -22,7 +22,7 @@ module.exports = {
                     handlers.checkToken(event, imageCarouselTemplateReply, textReply);
                 });
             } else if (event.message.text === "抽獎遊戲說明") {
-                textReply(true, event.replyToken, "1.在好盒器攤位索取指定序\n2.輸入序號得到抽獎券\n3.每天19:30現場抽出得獎者");
+                textReply(true, event.replyToken, "1.在好盒器攤位索取指定序\n2.輸入序號得到抽獎券\n3.每天22:00現場抽出得獎者");
             } else if (event.message.text === "登錄聯絡資訊") {
                 handlers.toAdd(event, textReply, buttonsReply);
             } else if (event.message.text === "我要修正聯絡資訊") {
