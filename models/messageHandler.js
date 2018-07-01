@@ -176,6 +176,7 @@ module.exports = {
 function findTicket(event, query, reply, skip) {
     Ticket.find(query, "", {
         sort: {
+            isUsed: -1,
             id: 1
         },
         skip: skip
@@ -196,7 +197,7 @@ function checkOverTen(ticketsList, event, reply, options) {
         length = 9;
     }
     for (var i = 0; i < length; i++) {
-        ticketIdStrList.push("#" + intReLength(ticketsList[i].id, 4));
+        ticketIdStrList.push("#" + intReLength(ticketsList[i].id, 4) + ((ticketsList[i].isUsed) ? "_win" : ""));
         ticketIdList.push(ticketsList[i].id);
     }
 

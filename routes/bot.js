@@ -22,7 +22,7 @@ module.exports = {
                     handlers.checkToken(event, imageCarouselTemplateReply, textReply);
                 });
             } else if (event.message.text === "抽獎遊戲說明") {
-                textReply(true, event.replyToken, "1.在好盒器攤位索取指定序\n2.輸入序號得到抽獎券\n3.每天22:00現場抽出得獎者");
+                textReply(true, event.replyToken, "1.在好盒器攤位索取指定序\n2.輸入序號得到抽獎券\n3.6/29-30 22:00 &\n　7/1 19:30 現場抽獎！\n\n＊得獎者請在7/1 22:00前到好盒器攤位領取哦！");
             } else if (event.message.text === "登錄聯絡資訊") {
                 handlers.toAdd(event, textReply, buttonsReply);
             } else if (event.message.text === "我要修正聯絡資訊") {
@@ -166,16 +166,21 @@ function imageCarouselTemplateReply(success, replyToken, ticketIds) {
             }
         };
         for (var i in ticketIds) {
-            if (!Number.isInteger(ticketIds[i]))
+            if (!Number.isInteger(ticketIds[i])) {
+                var win = false;
+                if (ticketIds[i].indexOf("_win") > 0) {
+                    win = true;
+                    ticketIds[i] = ticketIds[i].slice(0, ticketIds[i].indexOf("_win"));
+                }
                 echo.template.columns.push({
-                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/ticket" + (parseInt(ticketIds[i].slice(1), 10) % 8 + 1) + ".png",
+                    "imageUrl": "https://app.goodtogo.tw/wakeup/images/ticket" + (parseInt(ticketIds[i].slice(1), 10) % 8 + 1) + (win ? "_win" : "") + ".png",
                     "action": {
                         "type": "postback",
                         "label": ticketIds[i],
                         "data": "action=buy"
                     }
                 });
-            else
+            } else
                 echo.template.columns.push({
                     "imageUrl": "https://app.goodtogo.tw/wakeup/images/ticket_more.png",
                     "action": {
