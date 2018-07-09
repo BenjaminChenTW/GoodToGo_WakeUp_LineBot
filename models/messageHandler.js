@@ -152,9 +152,9 @@ module.exports = {
                     }
                     if ((i + 1) < 3 && allPrize.length > 0 && Date.now() > timePoint[i + 1]) replyTxt += "\n";
                 }
-                replyTxt += "恭喜以上得獎者！請帶著手機來好盒器攤位領獎哦^^";
+                replyTxt += "恭喜以上得獎者！請在 7/1 22:00 前帶著手機來好盒器攤位領獎哦^^";
             } else {
-                replyTxt += "還沒開獎哦！今天22:00將會抽出第一批幸運兒！";
+                replyTxt += "還沒開獎哦！今天 22:00 將會抽出第一批幸運兒！";
             }
             reply(true, event.replyToken, replyTxt);
         });
